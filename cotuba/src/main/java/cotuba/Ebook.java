@@ -8,6 +8,11 @@ public class Ebook {
     private Path outputFile;
     private List<Chapter> chapters;
 
+    public boolean isLastChapter(Chapter chapter) {
+        return chapters.get(chapters.size() - 1)
+            .equals(chapter);
+    }
+
     public String getFormat() {
         return format;
     }

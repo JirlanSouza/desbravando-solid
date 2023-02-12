@@ -43,11 +43,9 @@ public class CLIOptionsReader {
 
             try {
                 cmd = cmdParser.parse(options, args);
-            } catch (ParseException e) {
-                System.err.println(e.getMessage());
+            } catch (ParseException exception) {
                 helpFormatter.printHelp("cotuba", options);
-                System.exit(1);
-                return;
+                throw new IllegalArgumentException("Opção inválida", exception);
             }
 
             String markdownFolderName = cmd.getOptionValue("dir");

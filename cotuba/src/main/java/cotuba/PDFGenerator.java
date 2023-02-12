@@ -25,7 +25,9 @@ public class PDFGenerator {
                     pdfDocument.add((IBlockElement) element);
                 }
 
-                pdfDocument.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+                if (!ebook.isLastChapter(chapter)) {
+                    pdfDocument.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+                }
             }
 
         } catch (Exception ex) {
