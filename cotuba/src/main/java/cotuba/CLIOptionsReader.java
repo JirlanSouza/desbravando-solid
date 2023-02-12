@@ -21,24 +21,20 @@ public class CLIOptionsReader {
     private Path outputFile;
     private boolean verboseMode = false;
 
-    public CLIOptionsReader(String[] args) throws IllegalArgumentException{
+    public CLIOptionsReader(String[] args) throws IllegalArgumentException {
         try {
             var options = new Options();
 
-            var markdownFolderOption = new Option("d", "dir", true,
-                    "Diretório que contém os arquivos md. Default: diretório atual.");
+            var markdownFolderOption = new Option("d", "dir", true, "Diretório que contém os arquivos md. Default: diretório atual.");
             options.addOption(markdownFolderOption);
 
-            var ebookFormatOption = new Option("f", "format", true,
-                    "Formato de saída do ebook. Pode ser: pdf ou epub. Default: pdf");
+            var ebookFormatOption = new Option("f", "format", true, "Formato de saída do ebook. Pode ser: pdf ou epub. Default: pdf");
             options.addOption(ebookFormatOption);
 
-            var outputFileOption = new Option("o", "output", true,
-                    "Arquivo de saída do ebook. Default: book.{formato}.");
+            var outputFileOption = new Option("o", "output", true, "Arquivo de saída do ebook. Default: book.{formato}.");
             options.addOption(outputFileOption);
 
-            var verboseModeOption = new Option("v", "verbose", false,
-                    "Habilita modo verboso.");
+            var verboseModeOption = new Option("v", "verbose", false, "Habilita modo verboso.");
             options.addOption(verboseModeOption);
 
             CommandLineParser cmdParser = new DefaultParser();
@@ -81,8 +77,7 @@ public class CLIOptionsReader {
             }
             if (Files.isDirectory(outputFile)) {
                 // deleta arquivos do diretório recursivamente
-                Files.walk(outputFile).sorted(Comparator.reverseOrder())
-                        .map(Path::toFile).forEach(File::delete);
+                Files.walk(outputFile).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
             } else {
                 Files.deleteIfExists(outputFile);
             }
