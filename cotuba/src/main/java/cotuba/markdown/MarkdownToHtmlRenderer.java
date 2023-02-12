@@ -1,5 +1,6 @@
-package cotuba;
+package cotuba.markdown;
 
+import cotuba.domain.Chapter;
 import org.commonmark.node.AbstractVisitor;
 import org.commonmark.node.Heading;
 import org.commonmark.node.Node;

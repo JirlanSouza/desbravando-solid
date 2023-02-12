@@ -1,4 +1,6 @@
-package cotuba;
+package cotuba.domain;
+
+import cotuba.domain.Chapter;
 
 import java.nio.file.Path;
 import java.util.List;

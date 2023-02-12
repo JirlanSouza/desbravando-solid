@@ -1,4 +1,9 @@
-package cotuba;
+package cotuba.application;
+
+import cotuba.epub.EPUBGenerator;
+import cotuba.markdown.MarkdownToHtmlRenderer;
+import cotuba.pdf.PDFGenerator;
+import cotuba.domain.Ebook;
 
 import java.nio.file.Path;
 
