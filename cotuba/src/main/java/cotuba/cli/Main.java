@@ -1,7 +1,6 @@
 package cotuba.cli;
 
 import cotuba.application.Cotuba;
-import cotuba.cli.CLIOptionsReader;
 
 public class Main {
 

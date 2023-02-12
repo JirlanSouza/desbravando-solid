@@ -13,55 +13,71 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class MarkdownToHtmlRenderer {
     public List<Chapter> render(Path markdownFolder) {
-        var chapters = new ArrayList<Chapter>();
-        PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**/*.md");
-
-        try (Stream<Path> markdownFiles = Files.list(markdownFolder)) {
-            markdownFiles.filter(matcher::matches).sorted().forEach(markdownFile -> {
-                var parser = Parser.builder().build();
-                Node document = null;
+        return getMarkdownFiles(markdownFolder)
+            .stream()
+            .map(markdownFile -> {
                 var chapter = new Chapter();
+                var document = markdownParse(markdownFile);
+                document.accept(abstractVisitorFactory(chapter));
+                renderToHtml(markdownFile, chapter, document);
 
-                try {
-                    document = parser.parseReader(Files.newBufferedReader(markdownFile));
-                    document.accept(new AbstractVisitor() {
-                        @Override
-                        public void visit(Heading heading) {
-                            if (heading.getLevel() == 1) {
-                                String chapterTitle = ((Text) heading.getFirstChild()).getLiteral();
-                                chapter.setTitle(chapterTitle);
+                return chapter;
+            })
+            .toList();
+    }
 
-                            } else if (heading.getLevel() == 2) {
-                                // seção
-                            } else if (heading.getLevel() == 3) {
-                                // título
-                            }
-                        }
-                    });
-                } catch (Exception ex) {
-                    throw new IllegalStateException("Erro ao fazer parse do arquivo " + markdownFile, ex);
-                }
+    private List<Path> getMarkdownFiles(Path markdownFolder) {
+        try (var files = Files.list(markdownFolder)) {
+            PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**/*.md");
+            return files.filter(matcher::matches).sorted().toList();
 
-                try {
-                    var renderer = HtmlRenderer.builder().build();
-                    var html = renderer.render(document);
-                    chapter.setHtmlContent(html);
-                    chapters.add(chapter);
-
-                } catch (Exception ex) {
-                    throw new IllegalStateException("Erro ao renderizar para HTML o arquivo " + markdownFile, ex);
-                }
-            });
-        } catch (IOException ex) {
-            throw new IllegalStateException("Erro tentando encontrar arquivos .md em " + markdownFolder.toAbsolutePath(), ex);
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                "Erro tentando encontrar arquivos .md em " + markdownFolder.toAbsolutePath(),
+                exception
+            );
         }
+    }
 
-        return chapters;
+    private Node markdownParse(Path markdownFile) {
+        try {
+            var parser = Parser.builder().build();
+            return parser.parseReader(Files.newBufferedReader(markdownFile));
+
+        } catch (Exception exception) {
+            throw new IllegalStateException("Erro ao fazer parse do arquivo " + markdownFile, exception);
+        }
+    }
+
+    private void renderToHtml(Path markdownFile, Chapter chapter, Node document) {
+        try {
+            var renderer = HtmlRenderer.builder().build();
+            var html = renderer.render(document);
+            chapter.setHtmlContent(html);
+
+        } catch (Exception ex) {
+            throw new IllegalStateException("Erro ao renderizar para HTML o arquivo " + markdownFile, ex);
+        }
+    }
+
+    private AbstractVisitor abstractVisitorFactory(Chapter chapter) {
+        return new AbstractVisitor() {
+            @Override
+            public void visit(Heading heading) {
+                if (heading.getLevel() == 1) {
+                    String chapterTitle = ((Text) heading.getFirstChild()).getLiteral();
+                    chapter.setTitle(chapterTitle);
+
+                } else if (heading.getLevel() == 2) {
+                    // seção
+                } else if (heading.getLevel() == 3) {
+                    // título
+                }
+            }
+        };
     }
 }
