@@ -1,6 +1,8 @@
 package cotuba.cli;
 
+import cotuba.CotubaConfig;
 import cotuba.application.Cotuba;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class Main {
 
@@ -14,7 +16,8 @@ public class Main {
             var outputFile = CLIOptions.getOutputFile();
             verboseMode = CLIOptions.isVerboseMode();
 
-            var cotuba = new Cotuba();
+            var applicationContext =  new AnnotationConfigApplicationContext(CotubaConfig.class);
+            var cotuba = applicationContext.getBean(Cotuba.class);
             cotuba.execute(ebookFormat, markdownFolder, outputFile);
             System.out.println("Arquivo gerado com sucesso: " + outputFile);
 

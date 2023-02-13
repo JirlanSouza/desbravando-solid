@@ -8,12 +8,16 @@ import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.IBlockElement;
 import com.itextpdf.layout.element.IElement;
 import com.itextpdf.layout.property.AreaBreakType;
+import cotuba.application.PDFGenerator;
 import cotuba.domain.Chapter;
 import cotuba.domain.Ebook;
+import org.springframework.stereotype.Component;
 
 import java.nio.file.Files;
 
-public class PDFGenerator {
+@Component
+public class ItextPDFGenerator implements PDFGenerator {
+    @Override
     public void generates(Ebook ebook) {
         var outputFile = ebook.getOutputFile();
         try (var writer = new PdfWriter(Files.newOutputStream(outputFile));
