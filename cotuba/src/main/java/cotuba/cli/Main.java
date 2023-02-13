@@ -11,15 +11,12 @@ public class Main {
 
         try {
             var CLIOptions = new CLIOptionsReader(args);
-            var markdownFolder = CLIOptions.getMarkdownFolder();
-            var ebookFormat = CLIOptions.getEbookFormat();
-            var outputFile = CLIOptions.getOutputFile();
             verboseMode = CLIOptions.isVerboseMode();
 
-            var applicationContext =  new AnnotationConfigApplicationContext(CotubaConfig.class);
+            var applicationContext = new AnnotationConfigApplicationContext(CotubaConfig.class);
             var cotuba = applicationContext.getBean(Cotuba.class);
-            cotuba.execute(ebookFormat, markdownFolder, outputFile);
-            System.out.println("Arquivo gerado com sucesso: " + outputFile);
+            cotuba.execute(CLIOptions);
+            System.out.println("Arquivo gerado com sucesso: " + CLIOptions.getOutputFile());
 
         } catch (Exception ex) {
             System.err.println(ex.getMessage());

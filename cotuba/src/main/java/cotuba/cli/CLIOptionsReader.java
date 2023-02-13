@@ -1,12 +1,7 @@
 package cotuba.cli;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import cotuba.application.CotubaParameters;
+import org.apache.commons.cli.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +11,7 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Objects;
 
-class CLIOptionsReader {
+class CLIOptionsReader implements CotubaParameters {
     private Path markdownFolder;
     private String ebookFormat;
     private Path outputFile;
@@ -113,14 +108,17 @@ class CLIOptionsReader {
         verboseMode = cmd.hasOption("verbose");
     }
 
+    @Override
     public Path getMarkdownFolder() {
         return markdownFolder;
     }
 
+    @Override
     public String getEbookFormat() {
         return ebookFormat;
     }
 
+    @Override
     public Path getOutputFile() {
         return outputFile;
     }

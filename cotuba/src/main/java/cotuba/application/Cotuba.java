@@ -17,22 +17,22 @@ public class Cotuba {
         this.pdfGenerator = pdfGenerator;
     }
 
-    public void execute(String ebookFormat, Path markdownFolder, Path outputFile) {
-        var chapters = htmlRenderer.render(markdownFolder);
+    public void execute(CotubaParameters parameters) {
+        var chapters = htmlRenderer.render(parameters.getMarkdownFolder());
         var ebook = new Ebook();
-        ebook.setFormat(ebookFormat);
-        ebook.setOutputFile(outputFile);
+        ebook.setFormat(parameters.getEbookFormat());
+        ebook.setOutputFile(parameters.getOutputFile());
         ebook.setChapters(chapters);
 
 
-        if ("pdf".equals(ebookFormat)) {
+        if ("pdf".equals(parameters.getEbookFormat())) {
             pdfGenerator.generates(ebook);
 
-        } else if ("epub".equals(ebookFormat)) {
+        } else if ("epub".equals(parameters.getEbookFormat())) {
             epubGenerator.generates(ebook);
 
         } else {
-            throw new IllegalArgumentException("Formato do ebook inválido: " + ebookFormat);
+            throw new IllegalArgumentException("Formato do ebook inválido: " + parameters.getEbookFormat());
         }
     }
 }
