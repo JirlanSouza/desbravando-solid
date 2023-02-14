@@ -1,6 +1,5 @@
 package cotuba.markdown;
 
-import cotuba.application.MarkdownToHtmlRenderer;
 import cotuba.domain.Chapter;
 import org.commonmark.node.AbstractVisitor;
 import org.commonmark.node.Heading;
@@ -8,7 +7,6 @@ import org.commonmark.node.Node;
 import org.commonmark.node.Text;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -17,9 +15,9 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.util.List;
 
-@Component
-public class CommonmarkMarkdownToHtmlRenderer implements MarkdownToHtmlRenderer {
-    @Override
+
+public class MarkdownToHtmlRenderer {
+
     public List<Chapter> render(Path markdownFolder) {
         return getMarkdownFiles(markdownFolder)
             .stream()

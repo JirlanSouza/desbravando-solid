@@ -1,8 +1,6 @@
 package cotuba.cli;
 
-import cotuba.CotubaConfig;
 import cotuba.application.Cotuba;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class Main {
 
@@ -13,8 +11,7 @@ public class Main {
             var CLIOptions = new CLIOptionsReader(args);
             verboseMode = CLIOptions.isVerboseMode();
 
-            var applicationContext = new AnnotationConfigApplicationContext(CotubaConfig.class);
-            var cotuba = applicationContext.getBean(Cotuba.class);
+            var cotuba = new Cotuba();
             cotuba.execute(CLIOptions);
             System.out.println("Arquivo gerado com sucesso: " + CLIOptions.getOutputFile());
 

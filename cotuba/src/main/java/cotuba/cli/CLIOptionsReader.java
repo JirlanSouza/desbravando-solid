@@ -1,6 +1,7 @@
 package cotuba.cli;
 
 import cotuba.application.CotubaParameters;
+import cotuba.domain.EbookFormat;
 import org.apache.commons.cli.*;
 
 import java.io.File;
@@ -13,7 +14,7 @@ import java.util.Objects;
 
 class CLIOptionsReader implements CotubaParameters {
     private Path markdownFolder;
-    private String ebookFormat;
+    private EbookFormat ebookFormat;
     private Path outputFile;
     private boolean verboseMode = false;
 
@@ -81,22 +82,32 @@ class CLIOptionsReader implements CotubaParameters {
     private void handleEbookFormat(CommandLine cmd) {
         String ebookFormatName = cmd.getOptionValue("format");
 
-        if (ebookFormatName != null) {
-            ebookFormat = ebookFormatName.toLowerCase();
-        } else {
-            ebookFormat = "pdf";
+        if (ebookFormatName == null) {
+            ebookFormat = EbookFormat.PDF;
+            return;
+        }
+
+        try {
+            ebookFormat = EbookFormat.valueOf(ebookFormatName.toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("Formato do ebook inválido: " + ebookFormatName);
         }
     }
 
     private void handleEbookOutputFile(CommandLine cmd) throws IOException {
         String ebookOutputFileName = cmd.getOptionValue("output");
-        outputFile = Paths.get(Objects.requireNonNullElseGet(ebookOutputFileName, () -> "book." + ebookFormat.toLowerCase()));
+        outputFile = Paths.get(
+            Objects.requireNonNullElseGet(
+                ebookOutputFileName,
+                () -> "book." + ebookFormat.name().toLowerCase()
+            )
+        );
 
         if (Files.isDirectory(outputFile)) {
             try (var paths = Files.walk(outputFile)) {
                 paths.sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
+                    .map(Path::toFile)
+                    .forEach(File::delete);
             }
 
         } else {
@@ -114,7 +125,7 @@ class CLIOptionsReader implements CotubaParameters {
     }
 
     @Override
-    public String getEbookFormat() {
+    public EbookFormat getEbookFormat() {
         return ebookFormat;
     }
 
